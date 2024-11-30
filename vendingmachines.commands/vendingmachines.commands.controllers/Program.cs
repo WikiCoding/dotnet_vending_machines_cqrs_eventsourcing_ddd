@@ -1,6 +1,8 @@
 using vendingmachines.commands.app;
 using vendingmachines.commands.contracts;
 using vendingmachines.commands.domain.DomainEvents;
+using vendingmachines.commands.eventsourcinghandler;
+using vendingmachines.commands.eventstore;
 using vendingmachines.commands.persistence.MongoDbConfig;
 using vendingmachines.commands.persistence.Repository;
 
@@ -18,6 +20,9 @@ var assemblies = new[]
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
 builder.Services.AddScoped<MongoConfig>();
 builder.Services.AddScoped<IEventsRepository, EventsRepository>();
+builder.Services.AddScoped<EventSourcingHandler>();
+builder.Services.AddScoped<EventStore>();
+builder.Services.AddScoped<CheckMachineStatus>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

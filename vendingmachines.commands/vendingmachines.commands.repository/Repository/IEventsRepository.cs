@@ -6,5 +6,6 @@ namespace vendingmachines.commands.persistence.Repository;
 
 public interface IEventsRepository : IRepository
 {
-    Task<EventsDataModel> SaveMachine(Machine machine);
+    Task<EventsDataModel> Save(EventsDataModel eventDm);
+    Task<List<EventsDataModel>> FindByAggId(string aggId);
 }

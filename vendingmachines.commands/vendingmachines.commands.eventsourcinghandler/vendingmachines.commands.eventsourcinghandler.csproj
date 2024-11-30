@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\vendingmachines.commands.domain\vendingmachines.commands.domain.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.eventstore\vendingmachines.commands.eventstore.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj" />
+  </ItemGroup>
+
+</Project>

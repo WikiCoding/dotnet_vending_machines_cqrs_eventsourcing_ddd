@@ -2,4 +2,4 @@
 
 namespace vendingmachines.commands.contracts;
 
-public record CreateMachineCommand(string machineType) : IRequest<MachineCreatedDto>;
+public record CreateMachineCommand(string machineType) : IRequest;

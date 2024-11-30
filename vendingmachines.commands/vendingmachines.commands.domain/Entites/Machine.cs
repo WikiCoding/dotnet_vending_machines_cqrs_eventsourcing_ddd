@@ -7,11 +7,15 @@ namespace vendingmachines.commands.domain.Entites;
 
 public class Machine : IAggregateRoot
 {
-    private List<BaseDomainEvent> _events = [];
-    private List<Product> products = [];
+    private readonly List<BaseDomainEvent> _events = [];
+    private readonly List<Product> products = [];
     public MachineId MachineId { get; set; }
     public MachineType MachineType { get; set; }
-    public int Version { get; set; } = 0;
+    public int Version { get; set; } = -1;
+
+    public Machine()
+    {
+    }
 
     public Machine(CreateMachineCommand command)
     {
@@ -22,14 +26,67 @@ public class Machine : IAggregateRoot
     {
         MachineId = new MachineId(Guid.NewGuid());
         MachineType = new MachineType(machineCreatedEvent.MachineType);
-        Version = 1;
+        machineCreatedEvent.AggregateId = MachineId.Id.ToString();
+
+        Version++;
 
         _events.Add(machineCreatedEvent);
     }
 
+    public void AddProduct(ProductId productId, ProductName productName, ProductQty productQty)
+    {
+        if (products.Count == 10)
+        {
+            throw new InvalidOperationException("Machine is full");
+        }
+
+        var product = new Product(productId, productName, productQty);
+
+        products.Add(product);
+
+        var productAddedEvent = new ProductAddedEvent
+        {
+            AggregateId = MachineId.Id.ToString(),
+            ProductId = productId.Id.ToString(),
+            ProductName = productName.Name,
+            ProductQty = productQty.qty
+        };
+
+        RaiseProductAddedEvent(productAddedEvent);
+    }
+
+    public IReadOnlyList<Product> GetProducts()
+    {
+        return products.AsReadOnly();
+    }
+
+    public void RaiseProductAddedEvent(ProductAddedEvent productAddedEvent)
+    {
+        _events.Add(productAddedEvent);
+        Version++;
+    }
+
     public void RebuildState(List<BaseDomainEvent> events)
     {
+        foreach (var e in events)
+        {
+            if (e is MachineCreatedEvent machineCreatedEvent)
+            {
+                MachineId = new MachineId(Guid.Parse(machineCreatedEvent.AggregateId));
+                MachineType = new MachineType(machineCreatedEvent.MachineType);
+            }
 
+            if (e is ProductAddedEvent productAddedEvent)
+            {
+                var productId = new ProductId(Guid.Parse(productAddedEvent.ProductId));
+                var productName = new ProductName(productAddedEvent.ProductName);
+                var productQty = new ProductQty(productAddedEvent.ProductQty);
+
+                products.Add(new Product(productId, productName, productQty));
+            }
+            
+            Version++;
+        }
     }
 
     public void EventsCommited()
