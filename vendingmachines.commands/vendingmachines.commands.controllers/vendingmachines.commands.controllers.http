@@ -1,0 +1,6 @@
+@vendingmachines.commands.controllers_HostAddress = http://localhost:5028
+
+GET {{vendingmachines.commands.controllers_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

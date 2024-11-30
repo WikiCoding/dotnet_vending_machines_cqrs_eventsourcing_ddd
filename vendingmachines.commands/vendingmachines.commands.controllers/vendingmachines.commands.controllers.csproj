@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Confluent.Kafka" Version="2.6.1" />
+    <PackageReference Include="MediatR" Version="12.4.1" />
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.21.0" />
+    <PackageReference Include="MongoDB.Driver" Version="3.0.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\vendingmachines.commands.app\vendingmachines.commands.app.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.common\vendingmachines.commands.contracts.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.domain\vendingmachines.commands.domain.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj" />
+  </ItemGroup>
+
+</Project>
