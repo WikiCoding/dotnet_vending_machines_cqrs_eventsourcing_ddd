@@ -20,16 +20,4 @@ public class MongoConfig
     {
         return _database;
     }
-
-    //public IMongoDatabase SetDatabase()
-    //{
-    //    Console.WriteLine("Initializing mongo config");
-    //    var connectionUri = "mongodb://mongouser:mongopass@localhost:27017/machines?authSource=admin";
-    //    //var connectionUri = "mongodb://mongouser:mongopass@localhost:27017";
-
-    //    var client = new MongoClient(connectionUri);
-
-    //    _database = client.GetDatabase(DatabaseName);
-    //    return _database;
-    //}
 }
