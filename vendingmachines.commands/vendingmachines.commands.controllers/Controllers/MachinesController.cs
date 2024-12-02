@@ -41,4 +41,14 @@ public class MachinesController : ControllerBase
 
         return Created();
     }
+
+    [HttpPatch("{machine-id}/{product-id}")]
+    public async Task<IActionResult> UpdateProductStock([FromBody] UpdateProductStockCommand command, 
+                                                        [FromRoute(Name = "machine-id")] string machineId, 
+                                                        [FromRoute(Name = "product-id")] string productId)
+    {
+        var result = await _mediator.Send(command);
+
+        return Ok(result);
+    }
 }

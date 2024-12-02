@@ -1,16 +1,21 @@
-﻿using vendingmachines.commands.domain.DomainEvents;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
+using vendingmachines.commands.domain.DomainEvents;
 using vendingmachines.commands.persistence.Datamodels;
 using vendingmachines.commands.persistence.Repository;
+using vendingmachines.commands.producer;
 
 namespace vendingmachines.commands.eventstore;
 
 public class EventStore
 {
     private readonly IEventsRepository _eventsRepository;
+    private readonly KafkaProducer _kafkaProducer;
 
-    public EventStore(IEventsRepository eventsRepository)
+    public EventStore(IEventsRepository eventsRepository, KafkaProducer kafkaProducer)
     {
         _eventsRepository = eventsRepository;
+        _kafkaProducer = kafkaProducer;
     }
 
     public async Task<List<BaseDomainEvent>> GetEventsByAggregateId(string aggId)
@@ -49,6 +54,41 @@ public class EventStore
             await _eventsRepository.Save(eventDm);
 
             // we can produce the message here
+            await ProduceMessage(evnt);
         }
+    }
+
+    private async Task ProduceMessage(BaseDomainEvent evnt)
+    {
+        var topic = "";
+        var message = "";
+
+        if (evnt is MachineCreatedEvent)
+        {
+            topic = "machine-created-topic";
+            
+            message = JsonSerializer.Serialize((MachineCreatedEvent)evnt);
+        }
+
+        if (evnt is ProductAddedEvent)
+        {
+            topic = "product-added-topic";
+
+            message = JsonSerializer.Serialize((ProductAddedEvent)evnt);
+        }
+
+        if (evnt is ProductQtyUpdatedEvent)
+        {
+            topic = "product-qty-updated-event";
+            message = JsonSerializer.Serialize((ProductQtyUpdatedEvent)evnt);
+        }
+
+        if (string.IsNullOrEmpty(topic) || string.IsNullOrEmpty(message))
+        {
+            Console.WriteLine("No message is produced");
+            return;
+        }
+
+        await _kafkaProducer.ProduceAsync(topic, message, CancellationToken.None);
     }
 }

@@ -21,6 +21,7 @@
     <ProjectReference Include="..\vendingmachines.commands.domain\vendingmachines.commands.domain.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.eventsourcinghandler\vendingmachines.commands.eventsourcinghandler.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.eventstore\vendingmachines.commands.eventstore.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.producer\vendingmachines.commands.producer.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj" />
   </ItemGroup>
 

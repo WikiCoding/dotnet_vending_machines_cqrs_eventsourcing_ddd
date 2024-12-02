@@ -84,6 +84,12 @@ public class Machine : IAggregateRoot
 
                 products.Add(new Product(productId, productName, productQty));
             }
+
+            if (e is ProductQtyUpdatedEvent productQtyUpdatedEvent)
+            {
+                var product = products.Where(p => p.ProductId.Id.ToString().Equals(productQtyUpdatedEvent.ProductId)).First();
+                product.ProductQty = new ProductQty(productQtyUpdatedEvent.ProductQty);
+            }
             
             Version++;
         }
@@ -97,6 +103,31 @@ public class Machine : IAggregateRoot
     public IReadOnlyList<BaseDomainEvent> GetEvents()
     {
         return _events.AsReadOnly();
+    }
+
+    public void UpdateProductStock(string productId, int qtyToIcrement)
+    {
+        var product = products.Where(p => p.ProductId.Id.ToString().Equals(productId)).FirstOrDefault();
+
+        if (product == null) throw new InvalidOperationException($"Product with id {productId} is not present in Machine with id {MachineId.Id}");
+
+        var incremented = product.ProductQty.qty + qtyToIcrement;
+
+        product.ProductQty = new ProductQty(incremented);
+
+        RaiseProductQtyUpdatedEvent(new ProductQtyUpdatedEvent
+        {
+            AggregateId = MachineId.Id.ToString(),
+            ProductId = productId,
+            ProductQty = incremented,
+            Version = Version,
+        });
+    }
+
+    private void RaiseProductQtyUpdatedEvent(ProductQtyUpdatedEvent productQtyUpdatedEvent)
+    {
+        Version++;
+        _events.Add(productQtyUpdatedEvent);
     }
 
     public IReadOnlyList<Product> Products => products.AsReadOnly();

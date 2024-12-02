@@ -6,7 +6,7 @@ public class ProductQty
 
     public ProductQty(int qty)
     {
-        if (qty < 0) throw new ArgumentOutOfRangeException(nameof(qty));
+        if (qty < 0 || qty > 10) throw new ArgumentOutOfRangeException(nameof(qty));
         this.qty = qty;
     }
 }

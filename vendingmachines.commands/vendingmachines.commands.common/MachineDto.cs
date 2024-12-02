@@ -1,6 +1,4 @@
-﻿using System.Reflection.PortableExecutable;
-
-namespace vendingmachines.commands.contracts;
+﻿namespace vendingmachines.commands.contracts;
 
 public class MachineDto
 {

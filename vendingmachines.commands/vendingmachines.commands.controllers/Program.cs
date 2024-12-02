@@ -7,6 +7,7 @@ using vendingmachines.commands.eventsourcinghandler;
 using vendingmachines.commands.eventstore;
 using vendingmachines.commands.persistence.MongoDbConfig;
 using vendingmachines.commands.persistence.Repository;
+using vendingmachines.commands.producer;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +27,9 @@ builder.Services.AddScoped<EventSourcingHandler>();
 builder.Services.AddScoped<EventStore>();
 builder.Services.AddScoped<CheckMachineStatus>();
 builder.Services.AddExceptionHandler<ExHandler>();
+var kafkaConfig = builder.Configuration.GetSection("Kafka").Get<KafkaConfig>() ?? new KafkaConfig();
+builder.Services.AddSingleton(kafkaConfig);
+builder.Services.AddScoped<KafkaProducer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

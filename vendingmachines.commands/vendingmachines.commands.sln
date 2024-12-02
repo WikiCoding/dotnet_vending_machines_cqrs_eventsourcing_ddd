@@ -13,9 +13,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.ap
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.persistence", "vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj", "{DB6BB96C-27BC-41F9-A676-4A873460435A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.commands.eventsourcinghandler", "vendingmachines.commands.eventsourcinghandler\vendingmachines.commands.eventsourcinghandler.csproj", "{EBF3993D-3057-4B34-8A0B-7405C84E82AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.eventsourcinghandler", "vendingmachines.commands.eventsourcinghandler\vendingmachines.commands.eventsourcinghandler.csproj", "{EBF3993D-3057-4B34-8A0B-7405C84E82AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.commands.eventstore", "vendingmachines.commands.eventstore\vendingmachines.commands.eventstore.csproj", "{AA886685-90F3-4612-8FFB-51CCE470E6E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.eventstore", "vendingmachines.commands.eventstore\vendingmachines.commands.eventstore.csproj", "{AA886685-90F3-4612-8FFB-51CCE470E6E7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.commands.producer", "vendingmachines.commands.producer\vendingmachines.commands.producer.csproj", "{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +53,10 @@ Global
 		{AA886685-90F3-4612-8FFB-51CCE470E6E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA886685-90F3-4612-8FFB-51CCE470E6E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA886685-90F3-4612-8FFB-51CCE470E6E7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

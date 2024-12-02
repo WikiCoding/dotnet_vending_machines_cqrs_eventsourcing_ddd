@@ -8,7 +8,6 @@ public class MongoConfig
     private IMongoDatabase _database;
     public MongoConfig()
     {
-        Console.WriteLine("Initializing mongo config");
         var connectionUri = "mongodb://mongouser:mongopass@localhost:27017/machines?authSource=admin";
 
         var client = new MongoClient(connectionUri);
