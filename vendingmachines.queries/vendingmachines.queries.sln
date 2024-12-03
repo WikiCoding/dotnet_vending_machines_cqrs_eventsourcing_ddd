@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.controllers", "vendingmachines.queries.controllers\vendingmachines.queries.controllers.csproj", "{037E829C-F6E9-4E33-989E-5E2960D7FFBB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.application", "vendingmachines.queries.application\vendingmachines.queries.application.csproj", "{7D4FEC6F-ED98-44C3-A313-827476287522}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.entities", "vendingmachines.queries.entities\vendingmachines.queries.entities.csproj", "{D045FD95-4606-4D97-BACD-637AE3501C15}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.repository", "vendingmachines.queries.repository\vendingmachines.queries.repository.csproj", "{5B53879F-1B79-4D64-88A4-719FAA40C2F9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.consumers", "vendingmachines.queries.consumers\vendingmachines.queries.consumers.csproj", "{FAE1E705-0ACB-49B4-B704-0209CB0FB244}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.queries.contracts", "vendingmachines.queries.contracts\vendingmachines.queries.contracts.csproj", "{FAFDD992-4F79-4720-8DF4-D742A89779B9}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{037E829C-F6E9-4E33-989E-5E2960D7FFBB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{037E829C-F6E9-4E33-989E-5E2960D7FFBB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{037E829C-F6E9-4E33-989E-5E2960D7FFBB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{037E829C-F6E9-4E33-989E-5E2960D7FFBB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7D4FEC6F-ED98-44C3-A313-827476287522}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7D4FEC6F-ED98-44C3-A313-827476287522}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7D4FEC6F-ED98-44C3-A313-827476287522}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7D4FEC6F-ED98-44C3-A313-827476287522}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D045FD95-4606-4D97-BACD-637AE3501C15}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D045FD95-4606-4D97-BACD-637AE3501C15}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D045FD95-4606-4D97-BACD-637AE3501C15}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D045FD95-4606-4D97-BACD-637AE3501C15}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5B53879F-1B79-4D64-88A4-719FAA40C2F9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B53879F-1B79-4D64-88A4-719FAA40C2F9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B53879F-1B79-4D64-88A4-719FAA40C2F9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B53879F-1B79-4D64-88A4-719FAA40C2F9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAE1E705-0ACB-49B4-B704-0209CB0FB244}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAE1E705-0ACB-49B4-B704-0209CB0FB244}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAE1E705-0ACB-49B4-B704-0209CB0FB244}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAE1E705-0ACB-49B4-B704-0209CB0FB244}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FAFDD992-4F79-4720-8DF4-D742A89779B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FAFDD992-4F79-4720-8DF4-D742A89779B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FAFDD992-4F79-4720-8DF4-D742A89779B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FAFDD992-4F79-4720-8DF4-D742A89779B9}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {29C65122-1AD1-47AD-81CA-13253E7DFF53}
+	EndGlobalSection
+EndGlobal

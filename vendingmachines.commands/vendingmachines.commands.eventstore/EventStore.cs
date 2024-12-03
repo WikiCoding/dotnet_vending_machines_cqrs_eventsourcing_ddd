@@ -1,5 +1,4 @@
 ﻿using System.Text.Json;
-using System.Text.Json.Nodes;
 using vendingmachines.commands.domain.DomainEvents;
 using vendingmachines.commands.persistence.Datamodels;
 using vendingmachines.commands.persistence.Repository;
@@ -79,7 +78,7 @@ public class EventStore
 
         if (evnt is ProductQtyUpdatedEvent)
         {
-            topic = "product-qty-updated-event";
+            topic = "product-qty-updated-topic";
             message = JsonSerializer.Serialize((ProductQtyUpdatedEvent)evnt);
         }
 
