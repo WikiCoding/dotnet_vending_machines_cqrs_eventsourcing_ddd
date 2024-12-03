@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.do
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.contracts", "vendingmachines.commands.common\vendingmachines.commands.contracts.csproj", "{6F83DEA2-B88F-485E-BD40-9256E4414D0D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.app", "vendingmachines.commands.app\vendingmachines.commands.app.csproj", "{5832FCB0-0298-4B61-8AC4-F7C747149EF6}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.persistence", "vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj", "{DB6BB96C-27BC-41F9-A676-4A873460435A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.eventsourcinghandler", "vendingmachines.commands.eventsourcinghandler\vendingmachines.commands.eventsourcinghandler.csproj", "{EBF3993D-3057-4B34-8A0B-7405C84E82AD}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.eventstore", "vendingmachines.commands.eventstore\vendingmachines.commands.eventstore.csproj", "{AA886685-90F3-4612-8FFB-51CCE470E6E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.commands.producer", "vendingmachines.commands.producer\vendingmachines.commands.producer.csproj", "{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.producer", "vendingmachines.commands.producer\vendingmachines.commands.producer.csproj", "{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.application", "vendingmachines.commands.application\vendingmachines.commands.application.csproj", "{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,10 +37,6 @@ Global
 		{6F83DEA2-B88F-485E-BD40-9256E4414D0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6F83DEA2-B88F-485E-BD40-9256E4414D0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6F83DEA2-B88F-485E-BD40-9256E4414D0D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5832FCB0-0298-4B61-8AC4-F7C747149EF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5832FCB0-0298-4B61-8AC4-F7C747149EF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5832FCB0-0298-4B61-8AC4-F7C747149EF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5832FCB0-0298-4B61-8AC4-F7C747149EF6}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DB6BB96C-27BC-41F9-A676-4A873460435A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DB6BB96C-27BC-41F9-A676-4A873460435A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB6BB96C-27BC-41F9-A676-4A873460435A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +53,10 @@ Global
 		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{28FE9E88-A98B-4E51-BA0C-FDB2F029FCFC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
