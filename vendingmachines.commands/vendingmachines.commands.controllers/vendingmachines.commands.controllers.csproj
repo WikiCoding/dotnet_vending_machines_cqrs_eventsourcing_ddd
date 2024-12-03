@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\vendingmachines.commands.app\vendingmachines.commands.app.csproj" />
+    <ProjectReference Include="..\vendingmachines.commands.application\vendingmachines.commands.application.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.common\vendingmachines.commands.contracts.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.domain\vendingmachines.commands.domain.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.eventsourcinghandler\vendingmachines.commands.eventsourcinghandler.csproj" />
