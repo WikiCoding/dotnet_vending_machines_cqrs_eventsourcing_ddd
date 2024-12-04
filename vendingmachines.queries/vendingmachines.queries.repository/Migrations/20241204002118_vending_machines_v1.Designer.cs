@@ -11,7 +11,7 @@ using vendingmachines.queries.repository;
 namespace vendingmachines.queries.repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241203233437_vending_machines_v1")]
+    [Migration("20241204002118_vending_machines_v1")]
     partial class vending_machines_v1
     {
         /// <inheritdoc />
@@ -60,7 +60,7 @@ namespace vendingmachines.queries.repository.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("vendingmachines.queries.entities.Product", b =>

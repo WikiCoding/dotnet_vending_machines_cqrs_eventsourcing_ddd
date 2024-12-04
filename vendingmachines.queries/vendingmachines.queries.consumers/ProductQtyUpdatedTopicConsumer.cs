@@ -1,83 +1,36 @@
-﻿using Confluent.Kafka;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using System.Text.Json;
+using vendingmachines.queries.contracts;
+using vendingmachines.queries.repository;
 
 namespace vendingmachines.queries.consumers;
 
-public class ProductQtyUpdatedTopicConsumer : BackgroundService
+public class ProductQtyUpdatedTopicConsumer : BaseConsumer<ProductQtyUpdatedMessage>
 {
-    private readonly IConsumer<Ignore, string> _consumer;
-    private readonly IConfiguration _configuration;
-    private readonly IServiceProvider _serviceProvider;
-
-    public ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider)
+    public ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider) : base(configuration, serviceProvider)
     {
-        _configuration = configuration;
-        _serviceProvider = serviceProvider;
-
-        var consumerConfig = new ConsumerConfig
-        {
-            BootstrapServers = _configuration["Kafka:BootstrapServers"],
-            GroupId = _configuration["Kafka:GroupId"],
-            AutoOffsetReset = AutoOffsetReset.Earliest
-        };
-
-        _consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
     }
 
-    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    protected override async Task HandleMessageAsync(ProductQtyUpdatedMessage message, IServiceProvider serviceProvider,
+        CancellationToken stoppingToken)
     {
-        await Task.Yield();
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        
+        var product = await dbContext.Products.Where(p => p.ProductId.Equals(message.ProductId)).FirstOrDefaultAsync(stoppingToken);
+        
+        if (product == null) throw new NullReferenceException("Product not found");
 
-        while (!stoppingToken.IsCancellationRequested)
-        {
-            await Consume(stoppingToken);
+        product.ProductQty = message.ProductQty;
+        
+        dbContext.Products.Add(product);
+        await dbContext.SaveChangesAsync(stoppingToken);
 
-            await Task.Delay(TimeSpan.FromSeconds(2), stoppingToken);
-        }
-
-        _consumer.Close();
+        Console.WriteLine("Product updated qty updated");
     }
 
-    private async Task Consume(CancellationToken cancellationToken)
+    protected override string GetTopic()
     {
-        const string topic = "product-qty-updated-topic";
-        Console.WriteLine($"Subscribing to {topic}");
-
-        _consumer.Subscribe(topic);
-
-        var msg = _consumer.Consume(cancellationToken);
-
-        if (msg == null) return;
-
-        var msgValue = msg.Message.Value;
-
-        Console.WriteLine($"Message received: {msgValue}");
-
-        //var orderCreated = JsonSerializer.Deserialize<OrderCreatedEvent>(msgValue);
-
-        //if (orderCreated == null) return;
-
-        //_logger.LogWarning("Received OrderCreated message for OrderId: {OrderId}", orderCreated.orderId);
-
-        //using var scope = _serviceProvider.CreateScope();
-        //var dbContext = scope.ServiceProvider.GetRequiredService<OrdersDbContext>();
-
-        //_logger.LogWarning("Saving the new Order with id {OrderId} in the Orders Table", orderCreated.orderId);
-
-        //var order = new OrderDataModel
-        //{
-        //    OrderId = orderCreated.orderId,
-        //    OrderQty = orderCreated.orderQty,
-        //    ProductId = orderCreated.productId,
-        //    OrderStatus = OrderStatus.PENDING_CONFIRMATION,
-        //    LastUpdatedAt = DateTime.UtcNow.ToString()
-        //};
-
-        //dbContext.Orders.Add(order);
-
-        //await dbContext.SaveChangesAsync(cancellationToken);
+        return "product-qty-updated-topic";
     }
 }

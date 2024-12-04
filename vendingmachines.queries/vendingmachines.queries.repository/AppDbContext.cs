@@ -6,7 +6,7 @@ namespace vendingmachines.queries.repository;
 public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
 {
     public DbSet<Machine> Machines { get; set; }
-    public DbSet<Product> Projects { get; set; }
+    public DbSet<Product> Products { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

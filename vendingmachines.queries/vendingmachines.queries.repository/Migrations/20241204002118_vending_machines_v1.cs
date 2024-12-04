@@ -23,7 +23,7 @@ namespace vendingmachines.queries.repository.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Projects",
+                name: "Products",
                 columns: table => new
                 {
                     ProductId = table.Column<string>(type: "text", nullable: false),
@@ -33,9 +33,9 @@ namespace vendingmachines.queries.repository.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Projects", x => x.ProductId);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                     table.ForeignKey(
-                        name: "FK_Projects_Machines_MachineId",
+                        name: "FK_Products_Machines_MachineId",
                         column: x => x.MachineId,
                         principalTable: "Machines",
                         principalColumn: "machineid",
@@ -43,8 +43,8 @@ namespace vendingmachines.queries.repository.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Projects_MachineId",
-                table: "Projects",
+                name: "IX_Products_MachineId",
+                table: "Products",
                 column: "MachineId");
         }
 
@@ -52,7 +52,7 @@ namespace vendingmachines.queries.repository.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Projects");
+                name: "Products");
 
             migrationBuilder.DropTable(
                 name: "Machines");

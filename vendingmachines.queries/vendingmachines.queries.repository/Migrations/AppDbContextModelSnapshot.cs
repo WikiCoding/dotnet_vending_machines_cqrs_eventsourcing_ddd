@@ -57,7 +57,7 @@ namespace vendingmachines.queries.repository.Migrations
 
                     b.HasIndex("MachineId");
 
-                    b.ToTable("Projects");
+                    b.ToTable("Products");
                 });
 
             modelBuilder.Entity("vendingmachines.queries.entities.Product", b =>

@@ -11,8 +11,8 @@ builder.Services.AddAutoMapper(typeof(MachineMapperProfile));
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("db")));
 builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddHostedService<MachineCreatedTopicConsumer>();
-//builder.Services.AddHostedService<ProductAddedTopicConsumer>();
-//builder.Services.AddHostedService<ProductQtyUpdatedTopicConsumer>();
+builder.Services.AddHostedService<ProductAddedTopicConsumer>();
+builder.Services.AddHostedService<ProductQtyUpdatedTopicConsumer>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
