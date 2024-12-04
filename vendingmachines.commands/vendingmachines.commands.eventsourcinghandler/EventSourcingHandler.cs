@@ -1,5 +1,6 @@
 ﻿using vendingmachines.commands.domain.Entites;
 using vendingmachines.commands.eventstore;
+using vendingmachines.commands.persistence.Datamodels;
 
 namespace vendingmachines.commands.eventsourcinghandler;
 
@@ -25,5 +26,10 @@ public class EventSourcingHandler
         machine.RebuildState(aggEvents);
 
         return machine;
+    }
+
+    public async Task RebuildQueriesDbState()
+    {
+        await _eventStore.RebuildReadDb();
     }
 }

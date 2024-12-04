@@ -44,17 +44,26 @@ public abstract class BaseConsumer<TMessage> : BackgroundService
     {
         var topic = GetTopic();
         Console.WriteLine($"Subscribing to {topic}");
-        _consumer.Subscribe(topic);
 
-        var msg = _consumer.Consume(stoppingToken);
-        if (msg == null) return;
+        try
+        {
+            _consumer.Subscribe(topic);
 
-        Console.WriteLine($"Message received: {msg.Message.Value}");
-        var message = JsonSerializer.Deserialize<TMessage>(msg.Message.Value);
-        if (message == null) return;
+            var msg = _consumer.Consume(stoppingToken);
+            if (msg == null) return;
 
-        using var scope = _serviceProvider.CreateScope();
-        await HandleMessageAsync(message, scope.ServiceProvider, stoppingToken);
+            Console.WriteLine($"Message received: {msg.Message.Value}");
+            var message = JsonSerializer.Deserialize<TMessage>(msg.Message.Value);
+            if (message == null) return;
+
+            using var scope = _serviceProvider.CreateScope();
+            await HandleMessageAsync(message, scope.ServiceProvider, stoppingToken);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            // throw;
+        }
     }
     protected abstract Task HandleMessageAsync(TMessage message, IServiceProvider serviceProvider, CancellationToken stoppingToken);
     protected abstract string GetTopic();

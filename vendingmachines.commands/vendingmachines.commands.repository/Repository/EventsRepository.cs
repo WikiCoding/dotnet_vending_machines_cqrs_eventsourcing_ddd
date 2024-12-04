@@ -21,6 +21,11 @@ public class EventsRepository : IEventsRepository
         return await _database.GetCollection<EventsDataModel>(CollectionName).Find(el => el.AggregateId == aggId).SortBy(x => x.Version).ToListAsync();
     }
 
+    public async Task<IEnumerable<EventsDataModel>> FindAll()
+    {
+        return await _database.GetCollection<EventsDataModel>(CollectionName).Find(_ => true).ToListAsync();
+    }
+
     public async Task<EventsDataModel> Save(EventsDataModel eventDm)
     {
         await _database.GetCollection<EventsDataModel>(CollectionName).InsertOneAsync(eventDm);

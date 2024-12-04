@@ -94,4 +94,14 @@ public class EventStore
 
         await _kafkaProducer.ProduceAsync(topic, message, CancellationToken.None);
     }
+
+    public async Task RebuildReadDb()
+    {
+        var events = await _eventsRepository.FindAll();
+
+        foreach (var evnt in events)
+        {
+            ProduceMessage(evnt.DomainEvent);
+        }
+    }
 }

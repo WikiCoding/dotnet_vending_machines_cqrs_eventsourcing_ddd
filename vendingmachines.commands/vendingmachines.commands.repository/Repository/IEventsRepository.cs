@@ -7,4 +7,5 @@ public interface IEventsRepository : IRepository
 {
     Task<EventsDataModel> Save(EventsDataModel eventDm);
     Task<List<EventsDataModel>> FindByAggId(string aggId);
+    Task<IEnumerable<EventsDataModel>> FindAll();
 }
