@@ -6,12 +6,9 @@ using vendingmachines.queries.repository;
 
 namespace vendingmachines.queries.consumers;
 
-public class ProductAddedTopicConsumer : BaseConsumer<ProductAddedMessage>
+public class ProductAddedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider)
+    : BaseConsumer<ProductAddedMessage>(configuration, serviceProvider)
 {
-    public ProductAddedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider) : base(configuration, serviceProvider)
-    {
-    }
-
     protected override async Task HandleMessageAsync(ProductAddedMessage message, IServiceProvider serviceProvider, CancellationToken stoppingToken)
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
