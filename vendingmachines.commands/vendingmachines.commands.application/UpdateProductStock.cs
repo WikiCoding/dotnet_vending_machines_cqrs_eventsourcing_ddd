@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using vendingmachines.commands.cmds;
 using vendingmachines.commands.contracts;
 using vendingmachines.commands.eventsourcinghandler;
 
-namespace vendingmachines.commands.app;
+namespace vendingmachines.commands.application;
 
 public class UpdateProductStock : IRequestHandler<UpdateProductStockCommand, MachineDto>
 {
@@ -16,7 +17,7 @@ public class UpdateProductStock : IRequestHandler<UpdateProductStockCommand, Mac
     public async Task<MachineDto> Handle(UpdateProductStockCommand request, CancellationToken cancellationToken)
     {
         var machine = await _eventSourcingHandler.GetAggregateById(request.aggId);
-        machine.UpdateProductStock(request.productId, request.qtyToIcrement);
+        machine.UpdateProductStock(request.productId, request.qtyToIncrement);
         await _eventSourcingHandler.Save(machine);
 
         var machineProductsDto = machine.GetProducts().ToList().ConvertAll(product =>

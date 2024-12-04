@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using vendingmachines.commands.contracts;
+using vendingmachines.commands.cmds;
 using vendingmachines.commands.domain.Entites;
 using vendingmachines.commands.eventsourcinghandler;
 
-namespace vendingmachines.commands.app;
+namespace vendingmachines.commands.application;
 
 public class CreateMachine : IRequestHandler<CreateMachineCommand>
 {

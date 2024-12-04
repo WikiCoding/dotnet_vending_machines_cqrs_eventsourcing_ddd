@@ -20,10 +20,12 @@ public class ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServi
 
         product.ProductQty = message.ProductQty;
         
-        dbContext.Products.Add(product);
-        await dbContext.SaveChangesAsync(stoppingToken);
+        var rowsAffected = await dbContext.Products
+            .Where(product => product.ProductId == message.ProductId)
+            .ExecuteUpdateAsync(product => product
+                .SetProperty(p => p.ProductQty, p => message.ProductQty), cancellationToken: stoppingToken);
 
-        Console.WriteLine("Product updated qty updated");
+        Console.WriteLine(rowsAffected == 1 ? "Product updated qty updated" : "Product update failed");
     }
 
     protected override string GetTopic()

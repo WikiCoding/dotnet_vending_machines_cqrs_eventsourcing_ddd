@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using vendingmachines.commands.app;
+using vendingmachines.commands.application;
+using vendingmachines.commands.cmds;
 using vendingmachines.commands.contracts;
 
 namespace vendingmachines.commands.controllers.Controllers;
@@ -10,6 +11,9 @@ namespace vendingmachines.commands.controllers.Controllers;
 public class MachinesController : ControllerBase
 {
     private readonly IMediator _mediator;
+    /// <summary>
+    /// For debugging purposes only
+    /// </summary>
     private readonly CheckMachineStatus _checkMachineStatus;
 
     public MachinesController(IMediator mediator, CheckMachineStatus checkMachineStatus)
@@ -18,37 +22,25 @@ public class MachinesController : ControllerBase
         _checkMachineStatus = checkMachineStatus;
     }
 
+    [HttpPost]
+    public async Task<IActionResult> CreateMachine([FromBody] CreateMachineDto createMachineDto)
+    {
+        var command = new CreateMachineCommand(createMachineDto.machineType);
+        await _mediator.Send(command);
+
+        return NoContent();
+    }
+    
+    /// <summary>
+    /// For debugging purposes only
+    /// </summary>
+    /// <param name="machineId"></param>
+    /// <returns></returns>
     [HttpGet("{machine-id}")]
     public async Task<IActionResult> GetMachineCurrentState([FromRoute(Name = "machine-id")] string machineId)
     {
         var machine = await _checkMachineStatus.Handle(machineId);
 
         return Ok(machine);
-    }
-
-    [HttpPost]
-    public async Task<IActionResult> CreateMachine([FromBody] CreateMachineCommand createMachineCommand)
-    {
-        await _mediator.Send(createMachineCommand);
-
-        return Created();
-    }
-
-    [HttpPost("{machine-id}")]
-    public async Task<IActionResult> AddProductToMachine([FromBody] AddProductCommand command, [FromRoute(Name="machine-id")] string machineId)
-    {
-        await _mediator.Send(command);
-
-        return Created();
-    }
-
-    [HttpPatch("{machine-id}/{product-id}")]
-    public async Task<IActionResult> UpdateProductStock([FromBody] UpdateProductStockCommand command, 
-                                                        [FromRoute(Name = "machine-id")] string machineId, 
-                                                        [FromRoute(Name = "product-id")] string productId)
-    {
-        var result = await _mediator.Send(command);
-
-        return Ok(result);
     }
 }

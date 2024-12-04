@@ -10,6 +10,6 @@ public class Machine
     public string MachineId { get; set; } = string.Empty;
     [Column("machinetype")]
     public string MachineType { get; set; } = string.Empty;
-    public List<Product> Products { get; set; } = [];
+    // public List<Product> Products { get; set; } = [];
     // I can customize with info from the events gotten like when was created and things like that
 }

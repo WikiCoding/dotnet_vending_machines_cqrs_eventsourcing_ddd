@@ -55,23 +55,7 @@ namespace vendingmachines.queries.repository.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("MachineId");
-
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("vendingmachines.queries.entities.Product", b =>
-                {
-                    b.HasOne("vendingmachines.queries.entities.Machine", null)
-                        .WithMany("Products")
-                        .HasForeignKey("MachineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("vendingmachines.queries.entities.Machine", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

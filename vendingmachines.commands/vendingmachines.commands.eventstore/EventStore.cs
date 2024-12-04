@@ -65,14 +65,12 @@ public class EventStore
         if (evnt is MachineCreatedEvent)
         {
             topic = "machine-created-topic";
-            
             message = JsonSerializer.Serialize((MachineCreatedEvent)evnt);
         }
 
         if (evnt is ProductAddedEvent)
         {
             topic = "product-added-topic";
-
             message = JsonSerializer.Serialize((ProductAddedEvent)evnt);
         }
 
@@ -80,6 +78,12 @@ public class EventStore
         {
             topic = "product-qty-updated-topic";
             message = JsonSerializer.Serialize((ProductQtyUpdatedEvent)evnt);
+        }
+
+        if (evnt is ProductOrderedEvent)
+        {
+            topic = "product-ordered-topic";
+            message = JsonSerializer.Serialize((ProductOrderedEvent)evnt);
         }
 
         if (string.IsNullOrEmpty(topic) || string.IsNullOrEmpty(message))

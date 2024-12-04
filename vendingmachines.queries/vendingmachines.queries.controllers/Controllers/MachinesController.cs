@@ -29,16 +29,9 @@ public class MachinesController : ControllerBase
     }
 
     [HttpGet("{machine-id}")]
-    public async Task<IActionResult> GetMachineById([FromQuery(Name = "machine-id")] string machineId)
+    public async Task<IActionResult> GetMachineById([FromRoute(Name = "machine-id")] string machineId)
     {
         var machine = await _applicationService.FindById(machineId);
         return Ok(machine);
-    }
-
-    [HttpGet("{machine-id}/products")]
-    public async Task<IActionResult> GetMachineProducts([FromQuery(Name = "machine-id")] string machineId)
-    {
-        var products = await _applicationService.FindProductsByMachineId(machineId);
-        return Ok(products);
     }
 }

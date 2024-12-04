@@ -1,9 +1,9 @@
 ﻿using MediatR;
-using vendingmachines.commands.contracts;
+using vendingmachines.commands.cmds;
 using vendingmachines.commands.domain.ValueObjects;
 using vendingmachines.commands.eventsourcinghandler;
 
-namespace vendingmachines.commands.app;
+namespace vendingmachines.commands.application;
 
 public class AddProductToMachine : IRequestHandler<AddProductCommand>
 {

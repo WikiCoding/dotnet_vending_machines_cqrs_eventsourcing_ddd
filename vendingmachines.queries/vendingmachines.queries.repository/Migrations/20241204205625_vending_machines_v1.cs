@@ -34,28 +34,17 @@ namespace vendingmachines.queries.repository.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Products", x => x.ProductId);
-                    table.ForeignKey(
-                        name: "FK_Products_Machines_MachineId",
-                        column: x => x.MachineId,
-                        principalTable: "Machines",
-                        principalColumn: "machineid",
-                        onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Products_MachineId",
-                table: "Products",
-                column: "MachineId");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "Machines");
 
             migrationBuilder.DropTable(
-                name: "Machines");
+                name: "Products");
         }
     }
 }

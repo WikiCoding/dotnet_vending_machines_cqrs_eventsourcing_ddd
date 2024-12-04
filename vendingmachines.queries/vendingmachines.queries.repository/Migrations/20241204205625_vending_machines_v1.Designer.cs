@@ -11,7 +11,7 @@ using vendingmachines.queries.repository;
 namespace vendingmachines.queries.repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241204002118_vending_machines_v1")]
+    [Migration("20241204205625_vending_machines_v1")]
     partial class vending_machines_v1
     {
         /// <inheritdoc />
@@ -58,23 +58,7 @@ namespace vendingmachines.queries.repository.Migrations
 
                     b.HasKey("ProductId");
 
-                    b.HasIndex("MachineId");
-
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("vendingmachines.queries.entities.Product", b =>
-                {
-                    b.HasOne("vendingmachines.queries.entities.Machine", null)
-                        .WithMany("Products")
-                        .HasForeignKey("MachineId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("vendingmachines.queries.entities.Machine", b =>
-                {
-                    b.Navigation("Products");
                 });
 #pragma warning restore 612, 618
         }

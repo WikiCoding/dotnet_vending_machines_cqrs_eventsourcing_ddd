@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Diagnostics;
-using vendingmachines.commands.app;
-using vendingmachines.commands.contracts;
+using vendingmachines.commands.application;
+using vendingmachines.commands.cmds;
 using vendingmachines.commands.controllers.ExceptionHandler;
 using vendingmachines.commands.domain.DomainEvents;
 using vendingmachines.commands.eventsourcinghandler;

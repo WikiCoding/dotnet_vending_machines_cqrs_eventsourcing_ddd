@@ -1,4 +1,4 @@
-﻿using vendingmachines.commands.contracts;
+﻿using vendingmachines.commands.cmds;
 using vendingmachines.commands.domain.DDD;
 using vendingmachines.commands.domain.DomainEvents;
 using vendingmachines.commands.domain.ValueObjects;
@@ -22,7 +22,7 @@ public class Machine : IAggregateRoot
         RaiseMachineCreatedEvent(new MachineCreatedEvent { EventType = nameof(CreateMachineCommand), MachineType = command.machineType });
     }
 
-    public void RaiseMachineCreatedEvent(MachineCreatedEvent machineCreatedEvent)
+    private void RaiseMachineCreatedEvent(MachineCreatedEvent machineCreatedEvent)
     {
         MachineId = new MachineId(Guid.NewGuid());
         MachineType = new MachineType(machineCreatedEvent.MachineType);
@@ -35,10 +35,7 @@ public class Machine : IAggregateRoot
 
     public void AddProduct(ProductId productId, ProductName productName, ProductQty productQty)
     {
-        if (products.Count == 10)
-        {
-            throw new InvalidOperationException("Machine is full");
-        }
+        if (products.Count == 10) throw new InvalidOperationException("Machine is full");
 
         var product = new Product(productId, productName, productQty);
 
@@ -55,6 +52,39 @@ public class Machine : IAggregateRoot
         RaiseProductAddedEvent(productAddedEvent);
     }
 
+    public void OrderProduct(ProductId productId, ProductQty orderQty)
+    {
+        if (products.Count == 0) throw new InvalidOperationException("Machine is empty");
+        
+        var product = products.FirstOrDefault(p => p.ProductId.Id.ToString().Equals(productId.Id.ToString()));
+        
+        if (product == null) throw new InvalidDataException("Product not found");
+        
+        if (product.ProductQty.qty == 0 || product.ProductQty.qty < orderQty.qty) 
+            throw new InvalidOperationException("Not enough stock of this product");
+        
+        var updatedQty = product.ProductQty.qty - orderQty.qty;
+        var prodQty = new ProductQty(updatedQty);
+        
+        product.ProductQty = prodQty;
+
+        var productOrderedEvent = new ProductOrderedEvent
+        {
+            AggregateId = MachineId.Id.ToString(),
+            OrderedQty = orderQty.qty,
+            OrderId = Guid.NewGuid().ToString(),
+            ProductId = productId.Id.ToString()
+        };
+
+        RaiseProductOrderedEvent(productOrderedEvent);
+    }
+
+    private void RaiseProductOrderedEvent(ProductOrderedEvent productOrderedEvent)
+    {
+        _events.Add(productOrderedEvent);
+        Version++;
+    }
+
     public IReadOnlyList<Product> GetProducts()
     {
         return products.AsReadOnly();
@@ -66,10 +96,12 @@ public class Machine : IAggregateRoot
         Version++;
     }
 
-    public void RebuildState(List<BaseDomainEvent> events)
+    public void RebuildState(List<BaseDomainEvent> events, bool captureEvents = false)
     {
         foreach (var e in events)
         {
+            if (captureEvents) _events.Add(e);
+            
             if (e is MachineCreatedEvent machineCreatedEvent)
             {
                 MachineId = new MachineId(Guid.Parse(machineCreatedEvent.AggregateId));
@@ -87,8 +119,14 @@ public class Machine : IAggregateRoot
 
             if (e is ProductQtyUpdatedEvent productQtyUpdatedEvent)
             {
-                var product = products.Where(p => p.ProductId.Id.ToString().Equals(productQtyUpdatedEvent.ProductId)).First();
+                var product = products.First(p => p.ProductId.Id.ToString().Equals(productQtyUpdatedEvent.ProductId));
                 product.ProductQty = new ProductQty(productQtyUpdatedEvent.ProductQty);
+            }
+
+            if (e is ProductOrderedEvent productOrderedEvent)
+            {
+                var product = products.First(p => p.ProductId.Id.ToString().Equals(productOrderedEvent.ProductId));
+                product.ProductQty = new ProductQty(product.ProductQty.qty - productOrderedEvent.OrderedQty);
             }
             
             Version++;
@@ -105,13 +143,13 @@ public class Machine : IAggregateRoot
         return _events.AsReadOnly();
     }
 
-    public void UpdateProductStock(string productId, int qtyToIcrement)
+    public void UpdateProductStock(string productId, int qtyToIncrement)
     {
-        var product = products.Where(p => p.ProductId.Id.ToString().Equals(productId)).FirstOrDefault();
+        var product = products.FirstOrDefault(p => p.ProductId.Id.ToString().Equals(productId));
 
         if (product == null) throw new InvalidOperationException($"Product with id {productId} is not present in Machine with id {MachineId.Id}");
 
-        var incremented = product.ProductQty.qty + qtyToIcrement;
+        var incremented = product.ProductQty.qty + qtyToIncrement;
 
         product.ProductQty = new ProductQty(incremented);
 

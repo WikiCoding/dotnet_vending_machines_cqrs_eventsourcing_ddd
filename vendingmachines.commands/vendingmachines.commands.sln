@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.pr
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "vendingmachines.commands.application", "vendingmachines.commands.application\vendingmachines.commands.application.csproj", "{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "vendingmachines.commands.cmds", "vendingmachines.commands.cmds\vendingmachines.commands.cmds.csproj", "{0EA95EF8-BABF-44D7-8AF9-D6B2BEF490B1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -57,6 +59,10 @@ Global
 		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7A9AA574-5003-4ACF-ACEB-4A88F8495FAA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0EA95EF8-BABF-44D7-8AF9-D6B2BEF490B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0EA95EF8-BABF-44D7-8AF9-D6B2BEF490B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0EA95EF8-BABF-44D7-8AF9-D6B2BEF490B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0EA95EF8-BABF-44D7-8AF9-D6B2BEF490B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

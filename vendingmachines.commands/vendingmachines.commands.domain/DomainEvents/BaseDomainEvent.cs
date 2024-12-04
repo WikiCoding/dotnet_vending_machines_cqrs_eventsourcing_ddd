@@ -2,7 +2,7 @@
 
 namespace vendingmachines.commands.domain.DomainEvents;
 
-[BsonKnownTypes(typeof(MachineCreatedEvent), typeof(ProductAddedEvent), typeof(ProductQtyUpdatedEvent))]
+[BsonKnownTypes(typeof(MachineCreatedEvent), typeof(ProductAddedEvent), typeof(ProductQtyUpdatedEvent), typeof(ProductOrderedEvent))]
 public abstract class BaseDomainEvent
 {
     public int Version { get; set; }  = 0;
