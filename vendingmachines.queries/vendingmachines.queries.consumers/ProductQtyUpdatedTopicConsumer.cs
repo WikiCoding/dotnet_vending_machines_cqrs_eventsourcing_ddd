@@ -25,7 +25,7 @@ public class ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServi
             .ExecuteUpdateAsync(product => product
                 .SetProperty(p => p.ProductQty, p => message.ProductQty), cancellationToken: stoppingToken);
 
-        Console.WriteLine(rowsAffected == 1 ? "Product updated qty updated" : "Product update failed");
+        Console.WriteLine(rowsAffected == 1 ? "Product qty updated" : "Product update failed");
     }
 
     protected override string GetTopic()

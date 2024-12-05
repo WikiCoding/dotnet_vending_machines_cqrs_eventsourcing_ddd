@@ -1,6 +1,6 @@
-namespace vendingmachines.commands.domain.DomainEvents;
+﻿namespace vendingmachines.queries.contracts;
 
-public class ProductOrderedEvent : BaseDomainEvent
+public class ProductOrderedMessage : BaseEventMessage
 {
     public string OrderId { get; set; } = string.Empty;
     public string ProductId { get; set; } = string.Empty;

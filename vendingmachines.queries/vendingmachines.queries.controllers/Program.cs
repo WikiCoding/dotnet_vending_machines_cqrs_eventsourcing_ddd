@@ -15,6 +15,7 @@ builder.Services.AddScoped<ApplicationService>();
 builder.Services.AddHostedService<MachineCreatedTopicConsumer>();
 builder.Services.AddHostedService<ProductAddedTopicConsumer>();
 builder.Services.AddHostedService<ProductQtyUpdatedTopicConsumer>();
+builder.Services.AddHostedService<ProductOrderedTopicConsumer>();
 
 builder.Services.AddExceptionHandler<ExHandler>();
 
