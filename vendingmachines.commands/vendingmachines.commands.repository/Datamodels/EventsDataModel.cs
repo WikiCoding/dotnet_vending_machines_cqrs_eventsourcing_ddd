@@ -1,11 +1,13 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Newtonsoft.Json;
 using vendingmachines.commands.domain.DomainEvents;
 
 namespace vendingmachines.commands.persistence.Datamodels;
 
 public class EventsDataModel
 {
+    [JsonConverter(typeof(ObjectIdJsonConverter))]
     [BsonId]
     public ObjectId Id { get; set; }
     [BsonElement("machine_id")]

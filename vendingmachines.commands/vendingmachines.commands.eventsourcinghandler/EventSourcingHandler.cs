@@ -22,6 +22,7 @@ public class EventSourcingHandler
     public async Task<Machine> GetAggregateById(string aggregateId)
     {
         var aggEvents = await _eventStore.GetEventsByAggregateId(aggregateId);
+        // TODO: now with the snapshots, since I'm not storing the whole aggregate at once, I can't rebuild the state correctly... to fix
         var machine = new Machine();
         machine.RebuildState(aggEvents);
 

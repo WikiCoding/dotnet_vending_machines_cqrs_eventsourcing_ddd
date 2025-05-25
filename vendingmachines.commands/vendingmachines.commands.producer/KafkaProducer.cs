@@ -1,4 +1,5 @@
 ﻿using Confluent.Kafka;
+using Microsoft.Extensions.Logging;
 
 namespace vendingmachines.commands.producer;
 
@@ -6,9 +7,11 @@ public class KafkaProducer
 {
     private readonly IProducer<Null, string> _producer;
     private readonly KafkaConfig _kafkaConfig;
+    private readonly ILogger<KafkaProducer> _logger;
 
-    public KafkaProducer(KafkaConfig kafkaConfig)
+    public KafkaProducer(ILogger<KafkaProducer> logger, KafkaConfig kafkaConfig)
     {
+        _logger = logger;
         _kafkaConfig = kafkaConfig;
 
         var producerConfig = new ProducerConfig
@@ -25,6 +28,6 @@ public class KafkaProducer
 
         DeliveryResult<Null, string> result = await _producer.ProduceAsync(topic, kafkaMessage, cancellationToken);
 
-        Console.WriteLine("INFO: Message successfully delivered to Kafka");
+        _logger.LogInformation("Message successfully delivered to Kafka");
     }
 }

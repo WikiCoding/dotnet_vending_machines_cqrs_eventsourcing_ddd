@@ -30,6 +30,13 @@ services:
     ports:
       - "5555:5432"
 
+  redis:
+    image: redis
+    container_name: redis
+    restart: always
+    ports:
+      - "6379:6379"
+
   zookeeper:
     image: confluentinc/cp-zookeeper
     container_name: zookeeper

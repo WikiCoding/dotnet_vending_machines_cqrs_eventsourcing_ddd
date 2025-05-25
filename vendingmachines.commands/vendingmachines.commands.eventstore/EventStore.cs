@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using Microsoft.Extensions.Logging;
+using System.Text.Json;
 using vendingmachines.commands.domain.DomainEvents;
 using vendingmachines.commands.persistence.Datamodels;
 using vendingmachines.commands.persistence.Repository;
@@ -9,16 +10,30 @@ namespace vendingmachines.commands.eventstore;
 public class EventStore
 {
     private readonly IEventsRepository _eventsRepository;
+    private readonly SnapshotsRepository _snapshotsRepository;
     private readonly KafkaProducer _kafkaProducer;
+    private readonly ILogger<EventStore> _logger;
 
-    public EventStore(IEventsRepository eventsRepository, KafkaProducer kafkaProducer)
+    public EventStore(ILogger<EventStore> logger, IEventsRepository eventsRepository, KafkaProducer kafkaProducer, SnapshotsRepository snapshotsRepository)
     {
         _eventsRepository = eventsRepository;
         _kafkaProducer = kafkaProducer;
+        _logger = logger;
+        _snapshotsRepository = snapshotsRepository;
     }
 
     public async Task<List<BaseDomainEvent>> GetEventsByAggregateId(string aggId)
     {
+        var eventsSnapshotted = await _snapshotsRepository.FindByAggId(aggId);
+
+        if (eventsSnapshotted is not null && eventsSnapshotted.Count > 0)
+        {
+            _logger.LogInformation("Found snapshot for aggregate id {}", aggId);
+            return eventsSnapshotted.Select(e => e.DomainEvent).ToList();
+        }
+
+        _logger.LogInformation("No snapshots for aggregate id {}. Getting all events from db to rebuild state", aggId);
+
         var events = await _eventsRepository.FindByAggId(aggId);
 
         if (events.Count == 0) throw new Exception("Events with that aggregate id were not found");
@@ -28,9 +43,23 @@ public class EventStore
 
     public async Task SaveEvents(string aggId, IReadOnlyList<BaseDomainEvent> events, int expectedVersion)
     {
-        var eventStream = await _eventsRepository.FindByAggId(aggId);
+        List<EventsDataModel> eventStream;
+        var eventsSnapshotted = await _snapshotsRepository.FindByAggId(aggId);
+
+        if (eventsSnapshotted is not null && eventsSnapshotted.Count > 0)
+        {
+            _logger.LogInformation("Found snapshot for aggregate id {}", aggId);
+            eventStream = eventsSnapshotted;
+        }
+        else
+        {
+            _logger.LogInformation("Getting all events from db for aggregate id {}", aggId);
+            eventStream = await _eventsRepository.FindByAggId(aggId);
+        }
+
         if (eventStream.Count > 0 && eventStream.Last().Version >= expectedVersion)
         {
+            _logger.LogError("Concurreny Exception");
             throw new Exception("Concurrency exception");
         }
 
@@ -50,6 +79,7 @@ public class EventStore
 
             version++;
 
+            await _snapshotsRepository.Save(eventDm);
             await _eventsRepository.Save(eventDm);
 
             // we can produce the message here
@@ -88,7 +118,7 @@ public class EventStore
 
         if (string.IsNullOrEmpty(topic) || string.IsNullOrEmpty(message))
         {
-            Console.WriteLine("No message is produced");
+            _logger.LogInformation("No message is produced");
             return;
         }
 
@@ -101,7 +131,7 @@ public class EventStore
 
         foreach (var evnt in events)
         {
-            ProduceMessage(evnt.DomainEvent);
+            await ProduceMessage(evnt.DomainEvent);
         }
     }
 }

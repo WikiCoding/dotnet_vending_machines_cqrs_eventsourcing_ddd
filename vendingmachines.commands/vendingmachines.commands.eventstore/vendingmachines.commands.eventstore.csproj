@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\vendingmachines.commands.domain\vendingmachines.commands.domain.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.producer\vendingmachines.commands.producer.csproj" />
     <ProjectReference Include="..\vendingmachines.commands.repository\vendingmachines.commands.persistence.csproj" />

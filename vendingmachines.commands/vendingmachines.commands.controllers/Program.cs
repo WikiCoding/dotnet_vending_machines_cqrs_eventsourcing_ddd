@@ -30,6 +30,11 @@ builder.Services.AddExceptionHandler<ExHandler>();
 var kafkaConfig = builder.Configuration.GetSection("Kafka").Get<KafkaConfig>() ?? new KafkaConfig();
 builder.Services.AddSingleton(kafkaConfig);
 builder.Services.AddScoped<KafkaProducer>();
+builder.Services.AddStackExchangeRedisCache(options =>
+{
+    options.Configuration = builder.Configuration.GetConnectionString("Redis");
+});
+builder.Services.AddScoped<SnapshotsRepository>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
