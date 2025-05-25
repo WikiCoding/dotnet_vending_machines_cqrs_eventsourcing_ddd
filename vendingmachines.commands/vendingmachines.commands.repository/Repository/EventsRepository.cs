@@ -1,19 +1,18 @@
 ﻿using MongoDB.Driver;
 using vendingmachines.commands.persistence.Datamodels;
-using vendingmachines.commands.persistence.MongoDbConfig;
 
 namespace vendingmachines.commands.persistence.Repository;
 
 public class EventsRepository : IEventsRepository
 {
     private const string CollectionName = "machines";
-    private readonly MongoConfig _mongoConfig;
+    private readonly IMongoClient _mongoClient;
     private readonly IMongoDatabase _database;
 
-    public EventsRepository(MongoConfig mongoConfig)
+    public EventsRepository(IMongoClient mongoClient)
     {
-        _mongoConfig = mongoConfig;
-        _database = _mongoConfig.GetDatabaseConnection();
+        _mongoClient = mongoClient;
+        _database = _mongoClient.GetDatabase(CollectionName);
     }
 
     public async Task<List<EventsDataModel>> FindByAggId(string aggId)
@@ -26,7 +25,7 @@ public class EventsRepository : IEventsRepository
         return await _database.GetCollection<EventsDataModel>(CollectionName).Find(_ => true).ToListAsync();
     }
 
-    public async Task<EventsDataModel> Save(EventsDataModel eventDm)
+    public async Task<EventsDataModel> Save(EventsDataModel eventDm, IClientSessionHandle session)
     {
         await _database.GetCollection<EventsDataModel>(CollectionName).InsertOneAsync(eventDm);
 

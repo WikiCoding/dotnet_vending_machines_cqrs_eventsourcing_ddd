@@ -5,10 +5,11 @@ services:
     restart: always
     ports:
       - "27017:27017"
+      - "27018:27018"
+      - "27019:27019"
     environment:
-      MONGO_INITDB_ROOT_USERNAME: mongouser
-      MONGO_INITDB_ROOT_PASSWORD: mongopass
       MONGO_INITDB_DATABASE: vending_machines
+    command: ["--replSet", "rs0", "--bind_ip_all"] ## So I have support for transactions!
 
   mongo-express:
     image: mongo-express
@@ -18,7 +19,7 @@ services:
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: mongouser
       ME_CONFIG_MONGODB_ADMINPASSWORD: mongopass
-      ME_CONFIG_MONGODB_URL: mongodb://mongouser:mongopass@mongodb:27017/
+      ME_CONFIG_MONGODB_URL: mongodb://mongodb:27017/
       ME_CONFIG_BASICAUTH: false
 
   postgres:

@@ -8,7 +8,7 @@ namespace vendingmachines.queries.consumers;
 
 public abstract class BaseConsumer<TMessage> : BackgroundService
 {
-    private readonly IConsumer<Ignore, string> _consumer;
+    private readonly IConsumer<string, string> _consumer;
     private readonly IServiceProvider _serviceProvider;
 
     protected BaseConsumer(IConfiguration configuration, IServiceProvider serviceProvider)
@@ -23,7 +23,7 @@ public abstract class BaseConsumer<TMessage> : BackgroundService
             // TODO: set auto commit offsets off!
         };
 
-        _consumer = new ConsumerBuilder<Ignore, string>(consumerConfig).Build();
+        _consumer = new ConsumerBuilder<string, string>(consumerConfig).Build();
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)

@@ -8,7 +8,7 @@ namespace vendingmachines.commands.domain.Entites;
 public class Machine : IAggregateRoot
 {
     private readonly List<BaseDomainEvent> _events = [];
-    private readonly List<Product> products = [];
+    private List<Product> products = [];
     public MachineId MachineId { get; set; }
     public MachineType MachineType { get; set; }
     public int Version { get; set; } = -1;
@@ -166,6 +166,14 @@ public class Machine : IAggregateRoot
     {
         Version++;
         _events.Add(productQtyUpdatedEvent);
+    }
+
+    public void ToSnapshot(MachineId machineId, MachineType machineType, int version, List<Product> products)
+    {
+        MachineId = machineId;
+        MachineType = machineType;
+        Version = version;
+        this.products = products;
     }
 
     public IReadOnlyList<Product> Products => products.AsReadOnly();

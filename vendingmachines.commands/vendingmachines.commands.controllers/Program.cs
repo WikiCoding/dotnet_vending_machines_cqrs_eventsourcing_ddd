@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Diagnostics;
+using MongoDB.Driver;
 using vendingmachines.commands.application;
 using vendingmachines.commands.cmds;
 using vendingmachines.commands.controllers.ExceptionHandler;
@@ -21,7 +22,15 @@ var assemblies = new[]
 
 // Add services to the container.
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assemblies));
-builder.Services.AddScoped<MongoConfig>();
+
+builder.Services.AddSingleton<IMongoClient>(sp =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("MongoDb");
+    return new MongoClient(connectionString);
+});
+
+builder.Services.AddScoped<IMongoSessionFactory, MongoSessionFactory>();
+
 builder.Services.AddScoped<IEventsRepository, EventsRepository>();
 builder.Services.AddScoped<EventSourcingHandler>();
 builder.Services.AddScoped<EventStore>();

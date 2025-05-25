@@ -1,6 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 using System.Text.Json;
 using vendingmachines.commands.domain.DomainEvents;
+using vendingmachines.commands.domain.Entites;
+using vendingmachines.commands.domain.ValueObjects;
 using vendingmachines.commands.persistence.Datamodels;
 using vendingmachines.commands.persistence.Repository;
 using vendingmachines.commands.producer;
@@ -13,25 +16,19 @@ public class EventStore
     private readonly SnapshotsRepository _snapshotsRepository;
     private readonly KafkaProducer _kafkaProducer;
     private readonly ILogger<EventStore> _logger;
+    private readonly IMongoClient _mongoClient;
 
-    public EventStore(ILogger<EventStore> logger, IEventsRepository eventsRepository, KafkaProducer kafkaProducer, SnapshotsRepository snapshotsRepository)
+    public EventStore(ILogger<EventStore> logger, IEventsRepository eventsRepository, KafkaProducer kafkaProducer, SnapshotsRepository snapshotsRepository, IMongoClient mongoClient)
     {
         _eventsRepository = eventsRepository;
         _kafkaProducer = kafkaProducer;
         _logger = logger;
         _snapshotsRepository = snapshotsRepository;
+        _mongoClient = mongoClient;
     }
 
     public async Task<List<BaseDomainEvent>> GetEventsByAggregateId(string aggId)
     {
-        var eventsSnapshotted = await _snapshotsRepository.FindByAggId(aggId);
-
-        if (eventsSnapshotted is not null && eventsSnapshotted.Count > 0)
-        {
-            _logger.LogInformation("Found snapshot for aggregate id {}", aggId);
-            return eventsSnapshotted.Select(e => e.DomainEvent).ToList();
-        }
-
         _logger.LogInformation("No snapshots for aggregate id {}. Getting all events from db to rebuild state", aggId);
 
         var events = await _eventsRepository.FindByAggId(aggId);
@@ -41,30 +38,81 @@ public class EventStore
         return events.Select(e => e.DomainEvent).ToList();
     }
 
-    public async Task SaveEvents(string aggId, IReadOnlyList<BaseDomainEvent> events, int expectedVersion)
+    public async Task<Machine?> GetAggregateFromSnapshot(string aggregateId)
     {
-        List<EventsDataModel> eventStream;
-        var eventsSnapshotted = await _snapshotsRepository.FindByAggId(aggId);
+        var machineSnapshot = await _snapshotsRepository.FindByAggId(aggregateId);
 
-        if (eventsSnapshotted is not null && eventsSnapshotted.Count > 0)
+        if (machineSnapshot is null) return null;
+
+        var machineAgg = new Machine();
+
+        var machineId = new MachineId(machineSnapshot.AggregateId);
+        var machineType = new MachineType(machineSnapshot.MachineType);
+        var machineVersion = machineSnapshot.Version;
+        var productsAtSnapshot = machineSnapshot.products.Select(p =>
         {
-            _logger.LogInformation("Found snapshot for aggregate id {}", aggId);
-            eventStream = eventsSnapshotted;
-        }
-        else
+            var productId = new ProductId(p.ProductId);
+            var productName = new ProductName(p.ProductName);
+            var productQty = new ProductQty(p.ProductQty);
+
+            return new Product(productId, productName, productQty);
+        }).ToList();
+
+        machineAgg.ToSnapshot(machineId, machineType, machineVersion, productsAtSnapshot);
+
+        _logger.LogInformation("Aggregate with Id {} found in the snapshots db", aggregateId);
+
+        return machineAgg;
+    }
+
+    public async Task SaveEvents(string aggId, string machineType, IReadOnlyList<BaseDomainEvent> events, int expectedVersion, IReadOnlyList<Product> products)
+    {
+        var latestSnapshot = await GetAggregateFromSnapshot(aggId);
+        var version = 0;
+
+        if (latestSnapshot is not null)
+        {
+            _logger.LogInformation("Found snapshot for aggregate id {} with version {}", aggId, latestSnapshot.Version);
+
+            if (latestSnapshot.Version >= expectedVersion)
+            {
+                _logger.LogError("Concurreny Exception");
+                throw new Exception("Concurrency exception");
+            }
+
+            version = latestSnapshot.Version;
+        } else
         {
             _logger.LogInformation("Getting all events from db for aggregate id {}", aggId);
-            eventStream = await _eventsRepository.FindByAggId(aggId);
+            var eventStream = await _eventsRepository.FindByAggId(aggId);
+
+            if (eventStream.Count > 0 && eventStream.Last().Version >= expectedVersion)
+            {
+                _logger.LogError("Concurreny Exception");
+                throw new Exception("Concurrency exception");
+            }
+
+            version = expectedVersion;
         }
 
-        if (eventStream.Count > 0 && eventStream.Last().Version >= expectedVersion)
+        using var session = await _mongoClient.StartSessionAsync();
+        session.StartTransaction();
+
+        try
         {
-            _logger.LogError("Concurreny Exception");
-            throw new Exception("Concurrency exception");
+            await ProcessEventsProduceMessagesAndPersistSnapshot(aggId, machineType, events, version, products, session);
         }
+        catch (Exception ex)
+        {
+            await session.AbortTransactionAsync();
+            _logger.LogError("Transaction failed: {}", ex.Message);
+            throw;
+        }
+    }
 
-        var version = expectedVersion;
-
+    public async Task ProcessEventsProduceMessagesAndPersistSnapshot(string aggId, string machineType, IReadOnlyList<BaseDomainEvent> events, 
+        int version, IReadOnlyList<Product> products, IClientSessionHandle session)
+    {
         foreach (var evnt in events)
         {
             evnt.Version = version;
@@ -79,12 +127,15 @@ public class EventStore
 
             version++;
 
-            await _snapshotsRepository.Save(eventDm);
-            await _eventsRepository.Save(eventDm);
+            await _eventsRepository.Save(eventDm, session);
 
             // we can produce the message here
             await ProduceMessage(evnt);
         }
+
+        await PersistSnapshot(aggId, machineType, version, products);
+
+        await session.CommitTransactionAsync();
     }
 
     private async Task ProduceMessage(BaseDomainEvent evnt)
@@ -122,7 +173,8 @@ public class EventStore
             return;
         }
 
-        await _kafkaProducer.ProduceAsync(topic, message, CancellationToken.None);
+        // TODO: Replace with the outbox pattern to ensure to data correctness or with Kafka Connect CDC
+        await _kafkaProducer.ProduceAsync(topic, evnt.AggregateId, message, CancellationToken.None);
     }
 
     public async Task RebuildReadDb()
@@ -133,5 +185,30 @@ public class EventStore
         {
             await ProduceMessage(evnt.DomainEvent);
         }
+    }
+
+    private async Task PersistSnapshot(string aggId, string machineType, int expectedVersion, IReadOnlyList<Product> products)
+    {
+        var snapshotDataModel = GenerateSnapshotDataModel(aggId, machineType, expectedVersion, products);
+        await _snapshotsRepository.SaveSnapshot(snapshotDataModel);
+    }
+
+    private SnapshotDataModel GenerateSnapshotDataModel(string aggId, string machineType, int expectedVersion, IReadOnlyList<Product> products)
+    {
+        var productsDm = products.Select(p => new ProductSnapshotDataModel
+        {
+            ProductId = p.ProductId.Id,
+            ProductName = p.ProductName.Name,
+            ProductQty = p.ProductQty.qty
+        }
+        ).ToList();
+
+        return new SnapshotDataModel
+        {
+            AggregateId = Guid.Parse(aggId),
+            MachineType = machineType,
+            products = productsDm,
+            Version = expectedVersion
+        };
     }
 }
