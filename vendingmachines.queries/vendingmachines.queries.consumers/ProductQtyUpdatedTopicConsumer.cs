@@ -1,16 +1,19 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Confluent.Kafka;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using System.Transactions;
 using vendingmachines.queries.contracts;
 using vendingmachines.queries.repository;
 
 namespace vendingmachines.queries.consumers;
 
-public class ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider)
-    : BaseConsumer<ProductQtyUpdatedMessage>(configuration, serviceProvider)
+public class ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServiceProvider serviceProvider, ILogger<ProductQtyUpdatedTopicConsumer> logger)
+    : BaseConsumer<ProductQtyUpdatedMessage>(configuration, serviceProvider, logger)
 {
     protected override async Task HandleMessageAsync(ProductQtyUpdatedMessage message, IServiceProvider serviceProvider,
-        CancellationToken stoppingToken)
+        CancellationToken stoppingToken, IConsumer<string, string> _consumer)
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
         
@@ -19,13 +22,28 @@ public class ProductQtyUpdatedTopicConsumer(IConfiguration configuration, IServi
         if (product == null) throw new NullReferenceException("Product not found");
 
         product.ProductQty = message.ProductQty;
-        
-        var rowsAffected = await dbContext.Products
+
+        await using var transaction = await dbContext.Database.BeginTransactionAsync(stoppingToken);
+
+        try
+        {
+            var rowsAffected = await dbContext.Products
             .Where(product => product.ProductId == message.ProductId)
             .ExecuteUpdateAsync(product => product
                 .SetProperty(p => p.ProductQty, p => message.ProductQty), cancellationToken: stoppingToken);
 
-        Console.WriteLine(rowsAffected == 1 ? "Product qty updated" : "Product update failed");
+            if (rowsAffected != 1) throw new TransactionAbortedException();
+            
+            await transaction.CommitAsync(stoppingToken);
+
+            logger.LogInformation("Product qty updated, commiting offset");
+            _consumer.Commit();
+        }
+        catch (TransactionAbortedException e)
+        {
+            logger.LogError("Product qty update failed, rolling back transaction");
+            await transaction.RollbackAsync(stoppingToken);
+        }
     }
 
     protected override string GetTopic()
