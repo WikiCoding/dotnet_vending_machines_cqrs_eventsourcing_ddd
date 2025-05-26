@@ -6,7 +6,7 @@ namespace vendingmachines.commands.persistence.Repository;
 
 public interface IEventsRepository : IRepository
 {
-    Task<EventsDataModel> Save(EventsDataModel eventDm, IClientSessionHandle? session = null);
+    Task<EventsDataModel> Save(EventsDataModel eventDm, IClientSessionHandle session);
     Task<List<EventsDataModel>> FindByAggId(string aggId);
     Task<IEnumerable<EventsDataModel>> FindAll();
 }

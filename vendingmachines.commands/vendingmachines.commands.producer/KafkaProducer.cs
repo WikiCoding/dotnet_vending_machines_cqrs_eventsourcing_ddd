@@ -28,6 +28,6 @@ public class KafkaProducer
 
         DeliveryResult<string, string> result = await _producer.ProduceAsync(topic, kafkaMessage, cancellationToken);
 
-        _logger.LogInformation("Message successfully delivered to Kafka");
+        _logger.LogInformation("Message with Id {} successfully delivered to Kafka", key);
     }
 }

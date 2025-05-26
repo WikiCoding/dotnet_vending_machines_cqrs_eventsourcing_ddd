@@ -18,6 +18,7 @@ public class MachinesController : ControllerBase
         _mapper = mapper;
     }
 
+    // TODO: this is showing different ids from the real ones at the aggregate being published by message check this problem out!
     [HttpGet]
     public async Task<IActionResult> FindAllMachines()
     {

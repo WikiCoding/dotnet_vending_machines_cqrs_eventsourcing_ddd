@@ -5,7 +5,7 @@ using vendingmachines.commands.persistence.Datamodels;
 
 namespace vendingmachines.commands.persistence.Repository;
 
-public class SnapshotsRepository(ILogger<SnapshotsRepository> logger, IDistributedCache redis)
+public class SnapshotsRepository(ILogger<SnapshotsRepository> logger, IDistributedCache redis) : ISnapshotRepository
 {
     public async Task<SnapshotDataModel?> FindByAggId(string aggId)
     {

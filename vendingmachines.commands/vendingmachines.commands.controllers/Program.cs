@@ -34,16 +34,23 @@ builder.Services.AddScoped<IMongoSessionFactory, MongoSessionFactory>();
 builder.Services.AddScoped<IEventsRepository, EventsRepository>();
 builder.Services.AddScoped<EventSourcingHandler>();
 builder.Services.AddScoped<EventStore>();
+builder.Services.AddSingleton<IOutboxRepository, OutboxRepository>();
 builder.Services.AddScoped<CheckMachineStatus>();
 builder.Services.AddExceptionHandler<ExHandler>();
 var kafkaConfig = builder.Configuration.GetSection("Kafka").Get<KafkaConfig>() ?? new KafkaConfig();
 builder.Services.AddSingleton(kafkaConfig);
-builder.Services.AddScoped<KafkaProducer>();
+builder.Services.AddSingleton<KafkaProducer>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddSingleton<EventProducerLogic>();
+
 builder.Services.AddStackExchangeRedisCache(options =>
 {
     options.Configuration = builder.Configuration.GetConnectionString("Redis");
 });
-builder.Services.AddScoped<SnapshotsRepository>();
+
+builder.Services.AddScoped<ISnapshotRepository, SnapshotsRepository>();
+
+builder.Services.AddHostedService<ProducerBackgroundService>();
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

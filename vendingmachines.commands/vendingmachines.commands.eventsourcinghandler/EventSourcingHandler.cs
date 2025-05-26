@@ -1,22 +1,17 @@
 ﻿using Microsoft.Extensions.Logging;
 using vendingmachines.commands.domain.Entites;
-using vendingmachines.commands.domain.ValueObjects;
 using vendingmachines.commands.eventstore;
-using vendingmachines.commands.persistence.Datamodels;
-using vendingmachines.commands.persistence.Repository;
 
 namespace vendingmachines.commands.eventsourcinghandler;
 
 public class EventSourcingHandler
 {
     private readonly EventStore _eventStore;
-    private readonly SnapshotsRepository _snapshotsRepository;
     private readonly ILogger<EventSourcingHandler> _logger;
 
-    public EventSourcingHandler(ILogger<EventSourcingHandler> logger, EventStore eventStore, SnapshotsRepository snapshotsRepository)
+    public EventSourcingHandler(ILogger<EventSourcingHandler> logger, EventStore eventStore)
     {
         _eventStore = eventStore;
-        _snapshotsRepository = snapshotsRepository;
         _logger = logger;
     }
 
@@ -39,29 +34,6 @@ public class EventSourcingHandler
         machine.RebuildState(aggEvents);
 
         return machine;
-    }
-
-    private async Task PersistSnapshot(Machine machine)
-    {
-        var snapshotDataModel = GenerateSnapshotDataModel(machine);
-        await _snapshotsRepository.SaveSnapshot(snapshotDataModel);
-    }
-
-    private SnapshotDataModel GenerateSnapshotDataModel(Machine machine)
-    {
-        var productsDm = machine.GetProducts().Select(p => new ProductSnapshotDataModel { 
-            ProductId = p.ProductId.Id,
-            ProductName = p.ProductName.Name,
-            ProductQty = p.ProductQty.qty }
-        ).ToList();
-
-        return new SnapshotDataModel
-        {
-            AggregateId = machine.MachineId.Id,
-            MachineType = machine.MachineType.Type,
-            products = productsDm,
-            Version = machine.Version
-        };
     }
 
     public async Task RebuildQueriesDbState()
