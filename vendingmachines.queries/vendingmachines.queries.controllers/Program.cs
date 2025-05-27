@@ -12,10 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAutoMapper(typeof(MachineMapperProfile));
 builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("db")));
 builder.Services.AddScoped<ApplicationService>();
-builder.Services.AddHostedService<MachineCreatedTopicConsumer>();
-builder.Services.AddHostedService<ProductAddedTopicConsumer>();
-builder.Services.AddHostedService<ProductQtyUpdatedTopicConsumer>();
-builder.Services.AddHostedService<ProductOrderedTopicConsumer>();
+builder.Services.AddHostedService<DbUpdatesConsumer>();
+builder.Services.AddSingleton<MachineCreatedMessageHandler>();
+builder.Services.AddSingleton<ProductAddedMessageHandler>();
+builder.Services.AddSingleton<ProductQtyUpdatedMessageHandler>();
+builder.Services.AddSingleton<ProductOrderedMessageHandler>();
 
 builder.Services.AddExceptionHandler<ExHandler>();
 

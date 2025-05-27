@@ -46,7 +46,8 @@ public class Machine : IAggregateRoot
             AggregateId = MachineId.Id.ToString(),
             ProductId = productId.Id.ToString(),
             ProductName = productName.Name,
-            ProductQty = productQty.qty
+            ProductQty = productQty.qty,
+            EventType = nameof(ProductAddedEvent)
         };
 
         RaiseProductAddedEvent(productAddedEvent);
@@ -73,7 +74,8 @@ public class Machine : IAggregateRoot
             AggregateId = MachineId.Id.ToString(),
             OrderedQty = orderQty.qty,
             OrderId = Guid.NewGuid().ToString(),
-            ProductId = productId.Id.ToString()
+            ProductId = productId.Id.ToString(),
+            EventType = nameof(ProductOrderedEvent)
         };
 
         RaiseProductOrderedEvent(productOrderedEvent);
@@ -159,6 +161,7 @@ public class Machine : IAggregateRoot
             ProductId = productId,
             ProductQty = incremented,
             Version = Version,
+            EventType = nameof(ProductQtyUpdatedEvent)
         });
     }
 

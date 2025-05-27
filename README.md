@@ -27,12 +27,7 @@ KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.91:9092 <-- your IP goes here
 
 2. Then start the containers with `docker-compose up -d`
 3. You can visit `localhost:8080` and create manually the topics in the Kafka UI or just run the commands app and when calling the endpoints the topics will get created.
-4. The topics we have are:
-
-- 4.1. machine-created-topic
-- 4.2. product-added-topic
-- 4.3. product-qty-updated-topic
-- 4.4. product-ordered-topic
+4. I have not just the topic `machines-topic` so I can guarantee the order of messages, consuming from partition 0 all the events stream so I can rebuild the queries db properly.
 
 5. If you can't get a connection to mongodb you need to start the replica set manually going to the container terminal and running
 

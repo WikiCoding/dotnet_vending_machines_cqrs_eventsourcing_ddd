@@ -8,32 +8,13 @@ public class EventProducerLogic(ILogger<EventProducerLogic> logger, KafkaProduce
 {
     public async Task ProduceMessage(BaseDomainEvent evnt)
     {
-        var topic = "";
+        var topic = "machines-topic";
         var message = "";
 
-        if (evnt is MachineCreatedEvent)
-        {
-            topic = "machine-created-topic";
-            message = JsonSerializer.Serialize((MachineCreatedEvent)evnt);
-        }
-
-        if (evnt is ProductAddedEvent)
-        {
-            topic = "product-added-topic";
-            message = JsonSerializer.Serialize((ProductAddedEvent)evnt);
-        }
-
-        if (evnt is ProductQtyUpdatedEvent)
-        {
-            topic = "product-qty-updated-topic";
-            message = JsonSerializer.Serialize((ProductQtyUpdatedEvent)evnt);
-        }
-
-        if (evnt is ProductOrderedEvent)
-        {
-            topic = "product-ordered-topic";
-            message = JsonSerializer.Serialize((ProductOrderedEvent)evnt);
-        }
+        if (evnt is MachineCreatedEvent) message = JsonSerializer.Serialize((MachineCreatedEvent)evnt);
+        if (evnt is ProductAddedEvent) message = JsonSerializer.Serialize((ProductAddedEvent)evnt);
+        if (evnt is ProductQtyUpdatedEvent) message = JsonSerializer.Serialize((ProductQtyUpdatedEvent)evnt);
+        if (evnt is ProductOrderedEvent) message = JsonSerializer.Serialize((ProductOrderedEvent)evnt);
 
         if (string.IsNullOrEmpty(topic) || string.IsNullOrEmpty(message))
         {
