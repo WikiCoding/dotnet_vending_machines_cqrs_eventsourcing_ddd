@@ -17,7 +17,7 @@
 15. I took the change to try out and implement Concurrency checks within the domain and then on the EventStore.
 16. It wasn't really possible to implement DDD by the book, but really close. To rebuild the aggregate state, I had to choose because being able to create the aggregate root object with a no args constructor, meaning in inconsist state, or create it normally with wrong data just to replace it afterwards which it really doesn't make sense at all. So whenever I'm rebuilding the aggregate, I'll temporarily will create an aggregate root in inconsistent state.
 
-## To start the application
+## To start the application manually... Now I've automated topic creation, replica set initialization, database and collection creation either. So just run `docker-compose up -d` and you're done and ready to roll
 
 1. Along side with .NET and JDK21 you'll need to check your machine IPv4 Address and replace the one on the docker-compose.yml:
 
