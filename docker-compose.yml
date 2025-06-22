@@ -70,7 +70,7 @@ services:
       - "6379:6379"
 
   zookeeper:
-    image: confluentinc/cp-zookeeper
+    image: confluentinc/cp-zookeeper:7.6.5
     container_name: zookeeper
     environment:
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -79,7 +79,7 @@ services:
       - "2181:2181"
 
   kafka:
-    image: confluentinc/cp-kafka
+    image: confluentinc/cp-kafka:7.6.5
     container_name: kafka
     depends_on:
       - zookeeper
